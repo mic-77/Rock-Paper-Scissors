@@ -1,56 +1,82 @@
-function getComputerChoice() {
-  let computerChoice = Math.floor(Math.random() * 3);
-  if (computerChoice === 0) {
-    computerChoice = "rock";
-  } else if (computerChoice === 1) {
-    computerChoice = "paper";
-  } else {
-    computerChoice = "scissors";
-  }
-  console.log(computerChoice);
-  return computerChoice;
-}
-
-function playRound(playerSelection, computerSelection) {
-  playerSelection = playerSelection.toLowerCase();
-  if (playerSelection === computerSelection) {
-    return "It's a tie";
-  } else if (playerSelection === "rock" && computerSelection === "scissors") {
-    return `You Win ${playerSelection} beats ${computerSelection}`;
-  } else if (playerSelection === "paper" && computerSelection === "rock") {
-    return `You Win ${playerSelection} beats ${computerSelection}`;
-  } else if (playerSelection === "scissors" && computerSelection === "paper") {
-    return `You Win ${playerSelection} beats ${computerSelection}`;
-  } else {
-    return `You Lose ${playerSelection} beats ${computerSelection}`;
-  }
-}
-
-function game() {}
-let playerScore = 0;
 let computerScore = 0;
-for (let round = 1; round <= 5; round++) {
-  const playerSelection = prompt("Enter Your Choice");
-  const computerSelection = getComputerChoice();
-  const result = playRound(playerSelection, computerSelection);
-  console.log(`Round ${round}: ${result}`);
-  if (result.includes("Win")) {
-    playScore++;
-  } else if (result.includes("Lose")) {
-    computerScore++;
+let yourScore = 0;
+let you;
+let computer;
+let roundNumber = 0;
+
+const choices = ["rock", "paper", "scissors"];
+
+window.onload = function () {
+  for (let i = 0; i < 3; i++) {
+    let choice = document.createElement("img");
+    choice.id = choices[i];
+    choice.src = "./img/" + choices[i] + ".png";
+    choice.addEventListener("click", getSelection);
+    document.getElementById("choices").append(choice);
   }
-}
 
-console.log(
-  `Game Over! Player Score: ${playerScore}, Computer Score: ${computerScore}`
-);
+  function restartGame() {
+    // Reset game variables
+    computerScore = 0;
+    yourScore = 0;
+    roundNumber = 0;
 
-if (playerScore > computerScore) {
-  console.log("Congratulations! You win the game!");
-} else if (playerScore < computerScore) {
-  console.log("Sorry! You lose the game.");
-} else {
-  console.log("It's a tie! The game ends in a draw.");
-}
+    // Clear result display
+    document.getElementById("result").innerText = "";
 
-game();
+    // Reset score and round number display
+    document.getElementById("computerScore").innerText = "0";
+    document.getElementById("yourScore").innerText = "0";
+    document.getElementById("roundNumber").innerText = "0";
+  }
+
+  function gameEnded() {
+    if (yourScore === 5 || computerScore === 5) {
+      let resultDiv = document.getElementById("result");
+      if (yourScore === 5) {
+        resultDiv.innerText = "You Win!";
+      } else if (computerScore === 5) {
+        resultDiv.innerText = "You Lose!";
+      } else {
+        resultDiv.innerText = "It's a tie!";
+      }
+      document.getElementById("restartButton").style.display = "block";
+    }
+  }
+  document
+    .getElementById("restartButton")
+    .addEventListener("click", function () {
+      restartGame();
+      this.style.display = "none"; // Hide the restart button after clicking
+    });
+
+  function getSelection() {
+    you = this.id;
+    document.getElementById("yourChoice").src = "./img/" + you + ".png";
+
+    computer = choices[Math.floor(Math.random() * 3)];
+    document.getElementById("computerChoice").src =
+      "./img/" + computer + ".png";
+
+    if (you === computer) {
+      yourScore++;
+      computerScore++;
+    } else if (you === "rock" && computer === "scissors") {
+      yourScore++;
+    } else if (you === "paper" && computer === "rock") {
+      yourScore++;
+    } else if (you === "scissors" && computer === "paper") {
+      yourScore++;
+    } else {
+      computerScore++;
+    }
+    document.getElementById("yourScore").innerText = yourScore;
+    document.getElementById("computerScore").innerText = computerScore;
+
+    roundNumber++;
+    document.getElementById("roundNumber").innerText = roundNumber;
+
+    gameEnded();
+  }
+};
+document.getElementById("click").addEventListener("click", gamePlayed);
